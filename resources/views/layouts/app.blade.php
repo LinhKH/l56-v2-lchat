@@ -17,6 +17,10 @@
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
@@ -48,6 +52,30 @@
                                 <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                             </li>
                         @else
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <i class="fa fa-bell"></i>
+                                    @if(Auth::user()->unreadNotifications->count())
+                                    <span class="badge badge-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
+                                    @endif
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown" style="width: 400px;">
+                                    @if(Auth::user()->unreadNotifications->count())
+                                    <a class="dropdown-item" href="/maskAsRead" >
+                                        Mark all Notifications
+                                    </a>
+                                    @endif
+                                    @foreach ( Auth::user()->unreadNotifications as $notification)
+                                        <a class="dropdown-item" href="{{ $notification->markAsRead() }}" >
+                                            {{ $notification->data['data'] }}
+
+                                            <span class="pull-right">{{ $notification->created_at->diffForHumans() }}</span>
+                                        </a>
+                                        
+                                    @endforeach
+                                </div>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
